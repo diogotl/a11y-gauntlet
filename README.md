@@ -60,13 +60,6 @@ Flags you can type with the request: `--static`, `--runtime`, `--level A|AA|AAA`
 | `references/native-apps.md` | SwiftUI, Android and React Native checks |
 | `scripts/scan.mts` | The static scanner |
 
-## Honest limits
-
-- **Status: not yet validated on real projects.** The scanner was tested on fixtures and on a large open source codebase, and tuned for false positives there. The full flow (static scan, runtime pass, report) has not been through a broad field test, and the browser snippets have been run against one real documentation site (54 pages) but not across stacks. It has been tried on one real project so far.
-- **The scanner is heuristic.** It misses components passed through spread props or wrappers, and a clean scan is never a pass.
-- **No tool verifies everything.** Contrast over images, real screen reader output (VoiceOver, NVDA, TalkBack), caption quality, alt text quality and cognitive load always end up under *Not verified*.
-- **The widget contracts come from reading tests, not from a standard.** They were derived from the behaviour a mature primitives library asserts in its test suite (472 test files read), and checked against WCAG and the WAI-ARIA Authoring Practices. Where more than one implementation is legitimate the contract says so and marks it as a variant or **Review**, not a failure. Treat the contracts as strong guidance and confirm edge cases against current WCAG 2.2, the WAI-ARIA Authoring Practices Guide and MDN.
-
 ## Credits
 
 The skill's structure (philosophy, a required Before / After / Why review table, decision-driven workflow) follows the format of Emil Kowalski's [`emil-design-eng`](https://aiforui.dev/skills/emil-design-eng) skill. The content is original to this repo.
