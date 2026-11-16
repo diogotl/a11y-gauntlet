@@ -209,6 +209,16 @@ Screenshot, then remove `#__ts`.
 
 Run the accessibility category. Use failures as leads, not as the final answer. Lighthouse covers a subset of axe rules, so a score of 100 does not mean the page passes.
 
+## Headless pitfalls (read before you report a failure)
+
+Three measurement mistakes produced false alarms in a real audit. Rule out each before you report a runtime failure:
+
+1. **Timers are delayed in a headless browser that is not in the foreground.** Transitions and `setTimeout` callbacks can take over a second. A modal whose `hidden` event has not fired yet still has focus inside it, so "focus did not return to the trigger" read right after Escape is not a finding. Wait for the framework's own completion event (`hidden.bs.modal`, `transitionend`, the attribute you expect to change) with a bounded poll, never a fixed sleep.
+2. **`element.focus()` from a script is not the same as the user tabbing there.** Libraries that open on `focusin` (tooltips, some popovers) may not react, and the page may not own focus. Reach the element with real `Tab` presses from the previous focusable element, then judge.
+3. **Do not infer missing keyboard support from the first trial.** Many widgets attach their key handler lazily (after the first click or after hydration). If a key did nothing, repeat after the page has settled and after one interaction, and report the difference as **Review** if it does not reproduce.
+
+Measure state, not time: poll for the condition you are asserting, give up after a bounded wait, and say in the report which waits you used.
+
 ## What runtime cannot tell you
 
 Real screen reader output, whether alt text is meaningful, whether captions are accurate, cognitive load and reading level, voice control behaviour, and anything behind authentication you cannot reach. Put these in **Not verified**.

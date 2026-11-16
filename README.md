@@ -26,7 +26,13 @@ The runtime pass works on any stack because it reads the rendered DOM. For a sta
 
 ## Install
 
-Copy this folder into your agent's skills directory. For Claude Code:
+With the [skills CLI](https://github.com/vercel-labs/skills), which finds the `SKILL.md` at the root of this repo:
+
+```bash
+npx skills add diogotl/a11y-audit
+```
+
+Or copy the folder into your agent's skills directory by hand. For Claude Code:
 
 ```bash
 git clone https://github.com/diogotl/a11y-audit ~/.claude/skills/a11y-audit
@@ -56,7 +62,7 @@ Flags you can type with the request: `--static`, `--runtime`, `--level A|AA|AAA`
 
 ## Honest limits
 
-- **Status: not yet validated on real projects.** The scanner was tested on fixtures and on a large open source codebase, and tuned for false positives there. The full flow (static scan, runtime pass, report) has not been through a broad field test, and the browser snippets have only been checked for syntax.
+- **Status: not yet validated on real projects.** The scanner was tested on fixtures and on a large open source codebase, and tuned for false positives there. The full flow (static scan, runtime pass, report) has not been through a broad field test, and the browser snippets have been run against one real documentation site (54 pages) but not across stacks. It has been tried on one real project so far.
 - **The scanner is heuristic.** It misses components passed through spread props or wrappers, and a clean scan is never a pass.
 - **No tool verifies everything.** Contrast over images, real screen reader output (VoiceOver, NVDA, TalkBack), caption quality, alt text quality and cognitive load always end up under *Not verified*.
 - **The widget contracts come from reading tests, not from a standard.** They were derived from the behaviour a mature primitives library asserts in its test suite (472 test files read), and checked against WCAG and the WAI-ARIA Authoring Practices. Where more than one implementation is legitimate the contract says so and marks it as a variant or **Review**, not a failure. Treat the contracts as strong guidance and confirm edge cases against current WCAG 2.2, the WAI-ARIA Authoring Practices Guide and MDN.
