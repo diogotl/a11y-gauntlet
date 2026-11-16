@@ -265,8 +265,13 @@ function scanWeb(file: string, text: string): void {
       const href = literal(a, "href");
       if (!has(a, ...HREF_ATTRS) && !spread && !has(a, "name", "id") && !has(a, "role")) {
         add("ROLE-07", "Serious", file, text, at, "<a> without href/routerLink (used as button?)");
-      } else if (href !== null && /^(#|javascript:)/.test(href.replace(/ /g, "")) && !["#main", "#content", "#main-content", "#skip"].includes(href)) {
-        add("ROLE-07", "Serious", file, text, at, `<a href="${href}"> used as a button/placeholder`);
+      } else if (href !== null) {
+        const h = href.replace(/ /g, "");
+        if (h === "#" || /^javascript:/i.test(h)) {
+          add("ROLE-07", "Serious", file, text, at, `<a href="${href}"> used as a button/placeholder`);
+        } else if (h.startsWith("#") && h.length > 1 && !["#main", "#content", "#main-content", "#skip"].includes(h) && !ids.has(h.slice(1)) && !/[{$@%]/.test(h)) {
+          add("ROLE-07", "Moderate", file, text, at, `<a href="${href}"> points to an id that is not in this file (may live in another file)`);
+        }
       }
     }
 
@@ -283,7 +288,12 @@ function scanWeb(file: string, text: string): void {
 
     if (role && ["div", "span", "li", "p", "section", "img", "ul", "table"].includes(t) &&
       ["button", "link", "checkbox", "textbox", "heading", "img", "list", "listitem", "navigation", "main", "banner", "contentinfo", "search", "article"].includes(role))
-      add("ROLE-02", "Moderate", file, text, at, `<${tag} role="${role}"> — a native element exists`);
+    {
+      // role="img" with a name on a div is the standard way to name composed graphics (avatars, charts); list/listitem on
+      // div/span is legitimate when markup is constrained. Only the rest is "a native element exists".
+      const namedImg = role === "img" && has(a, "aria-label", "aria-labelledby");
+      if (!namedImg) add("ROLE-02", role === "list" || role === "listitem" ? "Minor" : "Moderate", file, text, at, `<${tag} role="${role}"> — a native element exists`);
+    }
 
     const redundant = new Set(["button|button", "a|link", "nav|navigation", "main|main", "header|banner", "footer|contentinfo", "img|img", "li|listitem",
       "input|textbox", "select|listbox", "aside|complementary", "form|form", "table|table", "article|article"]);
@@ -302,7 +312,9 @@ function scanWeb(file: string, text: string): void {
       }
     }
 
-    if (has(a, "aria-label", "aria-labelledby") && ["div", "span", "p", "b", "i", "em", "strong"].includes(t) && !roleAny && !spread)
+    // Bootstrap modals, offcanvas and toasts get role="dialog"/"status" from their JS when shown: confirm at runtime.
+    const jsRole = /(^|\s)(modal|offcanvas|toast|popover|tooltip)(\s|$)/.test(literal(a, "class") ?? "");
+    if (has(a, "aria-label", "aria-labelledby") && ["div", "span", "p", "b", "i", "em", "strong"].includes(t) && !roleAny && !spread && !jsRole)
       add("NAME-05", "Moderate", file, text, at, `aria-label on role-less <${tag}> (name is ignored by most screen readers)`);
 
     if (t === "input" || t === "textarea" || t === "select") {
@@ -640,8 +652,9 @@ function main(): void {
     let ext = low.endsWith(".blade.php") ? ".blade" : path.extname(low);
     if (/\.html\.(erb|twig|j2)$/.test(low)) ext = low.endsWith(".erb") ? ".erb" : ".twig";
     if (!(WEB_EXT.has(ext) || CSS_EXT.has(ext) || SWIFT_EXT.has(ext) || KOTLIN_EXT.has(ext) || XML_EXT.has(ext))) continue;
-    if (/\.(min\.js|min\.css|d\.ts|test\.tsx?|test\.js|spec\.tsx?|spec\.js|stories\.tsx|stories\.js|bundle\.js|chunk\.js)$/.test(low) ||
-      p.includes("/__tests__/") || p.includes("/cypress/")) continue;
+    const norm = "/" + p.replace(/\\/g, "/").replace(/^\.\//, "");
+    if (/\.(min\.js|min\.css|d\.ts|test\.[cm]?[jt]sx?|spec\.[cm]?[jt]sx?|cy\.[cm]?[jt]sx?|stories\.[jt]sx?|bundle\.js|chunk\.js)$/.test(low) ||
+      /\/(__tests__|cypress|e2e|playwright|__mocks__|__fixtures__)\//.test(norm.toLowerCase())) continue;
     let text: string;
     try {
       if (fs.statSync(p).size > MAX_BYTES) continue;
