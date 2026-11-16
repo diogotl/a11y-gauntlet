@@ -1,8 +1,8 @@
 # Rule catalogue
 
-Each rule has an ID (used in the report), the WCAG 2.2 success criterion (SC) when one applies, how to detect it (**S** static scan or code read, **R** runtime in the browser, **M** manual), and the default severity. Validate level A and AA by default. Rows whose SC is marked (AAA) are best-practice checks: report them as Minor/Moderate under the default level and as full failures only with `--level AAA`. All 55 WCAG 2.2 A/AA success criteria are covered by at least one row; the list of criteria that cannot be verified from code alone (1.2.x media, 1.3.3, 2.4.5, 3.2.x consistency, 3.3.4, 3.3.7) are marked M and must appear under **Not verified** unless you checked them manually.
+Each rule has an ID (used in the report), the WCAG 2.2 success criterion (SC) when one applies, how to detect it (**S** static scan or code read, **R** runtime in the browser, **M** manual), and the default severity. Validate level A and AA by default. Rows whose SC is marked (AAA) are best-practice checks: report them as Minor/Moderate under the default level and as full failures only with `--level AAA`. Every active WCAG 2.2 success criterion is covered by at least one row: 31 at level A, 24 at AA and 31 at AAA (checked against the W3C text). Criteria that code or a browser cannot decide are marked **M** and must appear under **Not verified** unless you checked them by hand: 1.2.x media, 1.3.3, 2.3.1, 2.4.5, 3.2.3, 3.2.4, 3.2.6, 3.3.4, 3.3.7 and most of level AAA.
 
-WCAG 2.2 changes to remember: 4.1.1 Parsing was removed (duplicate ids still matter when ARIA references them). New AA: 2.4.11 Focus Not Obscured (Minimum), 2.5.7 Dragging Movements, 2.5.8 Target Size (Minimum), 3.2.6 Consistent Help, 3.3.7 Redundant Entry, 3.3.8 Accessible Authentication (Minimum). New AAA: 2.4.12, 2.4.13, 3.3.9.
+WCAG 2.2 changes to remember: 4.1.1 Parsing was removed (duplicate ids still matter when ARIA references them). New in 2.2, level A: 3.2.6 Consistent Help, 3.3.7 Redundant Entry. New, level AA: 2.4.11 Focus Not Obscured (Minimum), 2.5.7 Dragging Movements, 2.5.8 Target Size (Minimum), 3.3.8 Accessible Authentication (Minimum). New, level AAA: 2.4.12 Focus Not Obscured (Enhanced), 2.4.13 Focus Appearance, 3.3.9 Accessible Authentication (Enhanced).
 
 ## Names and labels (NAME)
 
@@ -179,6 +179,40 @@ WCAG 2.2 changes to remember: 4.1.1 Parsing was removed (duplicate ids still mat
 | CTX-02 | Consistent identification: same function, same name and icon | 3.2.4 | M | Minor |
 | CTX-03 | Error prevention for account, payment or legal changes | 3.3.4 | M | Serious |
 | CTX-04 | CAPTCHA has a non-cognitive alternative | 3.3.8 | M | Serious |
+
+## Level AAA
+
+Checked only with `--level AAA`. Under the default level, report these as best practice (Minor) and say they were not required. Where a row overlaps an AA row it states the stricter threshold.
+
+| ID | Check | SC | Detect | Sev |
+| --- | --- | --- | --- | --- |
+| AAA-01 | Prerecorded video with audio has a sign-language interpretation | 1.2.6 | M | Minor |
+| AAA-02 | Where pauses in the soundtrack are too short for audio description, extended audio description is provided | 1.2.7 | M | Minor |
+| AAA-03 | Prerecorded synchronized media and video-only have a full text alternative (a script that includes what is said and what is seen) | 1.2.8 | S, M | Minor |
+| AAA-04 | Live audio-only content has a text alternative (live transcript) | 1.2.9 | M | Minor |
+| AAA-05 | The purpose of inputs, icons, regions and other UI components can be programmatically determined (landmarks, `autocomplete` for all collected personal data, semantic markup for icons and regions) | 1.3.6 | S, R | Minor |
+| AAA-06 | Text contrast is at least 7:1 (4.5:1 for large text) in every state and theme | 1.4.6 | R | Minor |
+| AAA-07 | Audio-only speech has no background audio, or it can be turned off, or it is at least 20 dB quieter | 1.4.7 | M | Minor |
+| AAA-08 | Blocks of text: user can pick foreground and background colours, lines are at most 80 characters wide (40 CJK), text is not justified, line spacing is at least 1.5 within paragraphs and paragraph spacing at least 1.5 times that, and text resizes to 200% without horizontal scrolling. Flag `text-align: justify`, missing `max-width` on prose and a `line-height` under 1.5 | 1.4.8 | S, R | Minor |
+| AAA-09 | Images of text are used only for decoration or where the presentation is essential (logos); no exception for convenience | 1.4.9 | S, M | Minor |
+| AAA-10 | Every function is operable by keyboard with no exception for path-dependent input (freehand drawing, drag along a path) | 2.1.3 | R, M | Minor |
+| AAA-11 | There is no timing at all, except for non-interactive synchronized media and real-time events | 2.2.3 | S, M | Minor |
+| AAA-12 | Non-emergency interruptions (auto-updating notices, pop-ups, banners) can be postponed or suppressed by the user | 2.2.4 | S, M | Minor |
+| AAA-13 | When an authenticated session expires, the user can continue after re-authenticating without losing data | 2.2.5 | R, M | Minor |
+| AAA-14 | Users are warned of the duration of inactivity that causes data loss, unless data is preserved for more than 20 hours | 2.2.6 | S, M | Minor |
+| AAA-15 | No content flashes at all (stricter than 2.3.1, which allows up to three flashes per second) | 2.3.2 | M | Minor |
+| AAA-16 | Content sections are organised with headings (long pages, article sections, form groups) | 2.4.10 | S, R | Minor |
+| AAA-17 | No part of the focused element is hidden by author-created content, such as sticky headers, banners and chat widgets (stricter than 2.4.11, which only requires it not to be entirely hidden) | 2.4.12 | R | Minor |
+| AAA-18 | The focus indicator encloses the control or is at least a 2 CSS px perimeter, has a 3:1 contrast between focused and unfocused state, and is not hidden by author content | 2.4.13 | R | Minor |
+| AAA-19 | Pointer targets are at least 44×44 CSS px (except inline text, user-agent controls, or where the size is essential) | 2.5.5 | R | Minor |
+| AAA-20 | Input is not restricted to one modality: do not attach only touch handlers or only mouse handlers, and do not disable the other (`touchstart` without `mousedown`/`click`, mouse-only widgets on touch devices) | 2.5.6 | S, M | Minor |
+| AAA-21 | Unusual words, idioms, jargon and abbreviations are explained by a mechanism (glossary, inline definition) | 3.1.3 | M | Minor |
+| AAA-22 | The expansion of each abbreviation is available (`<abbr title>` on first use, a glossary or inline expansion) | 3.1.4 | S, M | Minor |
+| AAA-23 | Text beyond lower secondary education level has a simpler summary or version | 3.1.5 | M | Minor |
+| AAA-24 | Where meaning depends on pronunciation of an ambiguous word, a pronunciation is provided | 3.1.6 | M | Minor |
+| AAA-25 | Context-sensitive help is available where input errors are likely (help links beside fields, hints linked with `aria-describedby`) | 3.3.5 | S, M | Minor |
+| AAA-26 | For every form submission, submissions are reversible, checked, or confirmed (stricter than 3.3.4, which applies only to legal, financial and data changes) | 3.3.6 | M | Minor |
+| AAA-27 | Authentication has no cognitive function test at all, including recognising objects or user-provided images; paste and password managers are allowed | 3.3.9 | S, M | Minor |
 
 ## Widget behaviour
 

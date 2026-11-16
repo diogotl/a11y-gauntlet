@@ -1,6 +1,6 @@
 # a11y-gauntlet
 
-An accessibility **validator** skill for AI coding agents (Claude Code and similar). You run it on a project and the agent audits it against **WCAG 2.2 level A and AA** plus a **widget behaviour contract**: roles, ARIA states, keyboard map, focus management and accessible names for dialogs, menus, selects, comboboxes, tabs, accordions, sliders, switches, toasts and forms.
+An accessibility **validator** skill for AI coding agents (Claude Code and similar). You run it on a project and the agent audits it against **WCAG 2.2 level A and AA** (and AAA with `--level AAA`) plus a **widget behaviour contract**: roles, ARIA states, keyboard map, focus management and accessible names for dialogs, menus, selects, comboboxes, tabs, accordions, sliders, switches, toasts and forms.
 
 It is not a linter replacement. Automated tools catch roughly a third of real accessibility problems. This skill adds the part they cannot see: what happens on Tab, on Escape, on open, on close, after a state change. It also says plainly what it could **not** verify.
 
@@ -11,7 +11,7 @@ When invoked, the agent:
 1. **Detects the stack** and scopes the audit (a path, a URL, a component, or only the files changed in git).
 2. **Runs a static scan** (`scripts/scan.mts`, TypeScript, no dependencies) as a first filter, then reads the flagged code. Hits are leads, not verdicts.
 3. **Compares widgets against their contracts.** Core rules apply to every widget. Deep rules apply to hand-built widgets, or with `--deep`.
-4. **Walks the WCAG 2.2 A/AA catalogue** and marks each rule Fail, Pass, Needs review, or Not verifiable here.
+4. **Walks the WCAG 2.2 catalogue (A and AA by default, AAA on request)** and marks each rule Fail, Pass, Needs review, or Not verifiable here.
 5. **Uses what the project already has**: ESLint a11y plugins, axe tests, Playwright specs, Xcode audits.
 6. **Runs a runtime pass** if there is a URL or dev server: accessibility snapshot, browser snippets (unnamed controls, broken ARIA references, tab stops, focus visibility, target size, document basics), a keyboard walk, preference emulation and a Lighthouse cross-check.
 7. **Reports** one Before / After / Why table with severity, rule ID and `file:line`, then **Summary**, **Passed** and **Not verified**.
@@ -52,7 +52,7 @@ Flags you can type with the request: `--static`, `--runtime`, `--level A|AA|AAA`
 | Path | What it holds |
 | --- | --- |
 | `SKILL.md` | The workflow, report format, severity rules |
-| `references/rules.md` | The rule catalogue: WCAG 2.2 A/AA plus implementation checks, each with an ID, how to detect it and a default severity |
+| `references/rules.md` | The rule catalogue: every WCAG 2.2 success criterion (A, AA and AAA) plus implementation checks, each with an ID, how to detect it and a default severity |
 | `references/widget-contracts.md` | Core widget contracts (names, roles, states, keys, focus, Escape, focus return, announcements) |
 | `references/widget-contracts-deep.md` | Deep widget contracts (timings, hover intent, scroll lock, IME, touch arbitration), for hand-built widgets and `--deep` |
 | `references/frameworks.md` | How the checks apply to each stack, SPAs, hydration and shadow DOM |
