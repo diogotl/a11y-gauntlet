@@ -1,4 +1,4 @@
-# a11y-audit
+# a11y-gauntlet
 
 An accessibility **validator** skill for AI coding agents (Claude Code and similar). You run it on a project and the agent audits it against **WCAG 2.2 level A and AA** plus a **widget behaviour contract**: roles, ARIA states, keyboard map, focus management and accessible names for dialogs, menus, selects, comboboxes, tabs, accordions, sliders, switches, toasts and forms.
 
@@ -29,16 +29,16 @@ The runtime pass works on any stack because it reads the rendered DOM. For a sta
 With the [skills CLI](https://github.com/vercel-labs/skills), which finds the `SKILL.md` at the root of this repo:
 
 ```bash
-npx skills add diogotl/a11y-audit
+npx skills add diogotl/a11y-gauntlet
 ```
 
 Or copy the folder into your agent's skills directory by hand. For Claude Code:
 
 ```bash
-git clone https://github.com/diogotl/a11y-audit ~/.claude/skills/a11y-audit
+git clone https://github.com/diogotl/a11y-gauntlet ~/.claude/skills/a11y-gauntlet
 ```
 
-Then ask for it by name (`/a11y-audit`) or just ask the agent to audit the accessibility of a project, a page or a component.
+Then ask for it by name (`/a11y-gauntlet`) or just ask the agent to audit the accessibility of a project, a page or a component.
 
 Flags you can type with the request: `--static`, `--runtime`, `--level A|AA|AAA` (default AA), `--component <name>`, `--changed`, `--deep`.
 
